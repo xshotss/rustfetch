@@ -47,6 +47,6 @@ mod info_tests {
     #[test]
     fn get_cpu_data_success() {
         
-        std::fs::write("cpu_name.txt", get_cpu_name()).unwrap();
+        std::fs::write("tests/cpu_name.txt", get_cpu_name()).unwrap();
     }
 }
