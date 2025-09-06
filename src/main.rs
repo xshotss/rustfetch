@@ -11,12 +11,17 @@ use colored::Colorize;
     long_about = None,
 )]
 pub struct RustfetchCLI {
+    #[arg(short, long, global = true, default_value_t = false)]
+    verbose: bool,
+
+
     #[command(subcommand)]
     pub commands: Option<Commands>
 }
 
 #[derive(Subcommand)]
 pub enum Commands {
+    Version,
     GenConfig,
 }
 
@@ -33,7 +38,15 @@ fn main() {
                     generate_config();
                 }
 
+                Commands::Version => {
+                    if cli.verbose {
+                        print!("Rustfetch:");
+                        println!("A modern and highly customizable system information tool.");
+                        println!("GitHub Repo: https://github.com/xshotss/rustfetch");
+                    }
 
+                    println!("v{}", env!("CARGO_PKG_VERSION"));
+                }
             }
         }
 
