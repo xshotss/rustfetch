@@ -37,7 +37,7 @@ fn main() {
 
             Commands::Version => {
                 if cli.verbose {
-                    print!("Rustfetch:");
+                    print!("Rustfetch: ");
                     println!("A modern and highly customizable system information tool.");
                     println!("GitHub Repo: https://github.com/xshotss/rustfetch");
                 }
