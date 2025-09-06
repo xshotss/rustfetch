@@ -2,6 +2,7 @@ use std::fs;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
+use rustfetch::TUX_ASCII_ART;
 
 #[derive(Parser)]
 #[command(
@@ -67,14 +68,19 @@ fn generate_config() {
                 // generate config.lua file
                 match std::fs::write(
                     destination.join("config.lua"),
-                    "
+                    r#"
 -- This is an automatically generating config file for Rustfetch.
 -- Check the Github repo for help:
 -- https://github.com/xshotss/rustfetch
 
-ascii_art = \"default.txt\"
-modules = \"modules.json\"
-                ",
+-- All ASCII art files should be placed in ~/.config/rustfetch/ascii/
+ascii_art = "tux.txt"
+
+-- For configuring your own modules, go to the repository for help.
+default_modules = true
+
+module_mode = "fancy"
+                "#,
                 ) {
                     Ok(_) => println!("{}", "Generated default Lua file successfully!".green()),
 
@@ -92,6 +98,19 @@ modules = \"modules.json\"
                         eprintln!(
                             "{}",
                             "CRITICAL: Failed to create default ASCII directory!".red()
+                        );
+                        eprintln!("Generated error: {e}");
+                        std::process::exit(1);
+                    }
+                }
+
+                match std::fs::write(destination.join("ascii/tux.txt"),
+                TUX_ASCII_ART) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        eprintln!(
+                            "{}",
+                            "CRITICAL: Failed to load Tux ASCII art!".red()
                         );
                         eprintln!("Generated error: {e}");
                         std::process::exit(1);
