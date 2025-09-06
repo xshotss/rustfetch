@@ -2,8 +2,6 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
 
-
-
 pub fn get_cpu_name() -> String {
     let file = match File::open("/proc/cpuinfo") {
         Ok(f) => f,
@@ -12,9 +10,9 @@ pub fn get_cpu_name() -> String {
             std::process::exit(1);
         }
     };
-    
+
     let reader = BufReader::new(file);
-    
+
     for line in reader.lines() {
         let line = match line {
             Ok(l) => l,
@@ -23,22 +21,19 @@ pub fn get_cpu_name() -> String {
                 continue;
             }
         };
-        
+
         if line.starts_with("model name") {
             // Split on colon and take the part after it
             if let Some(cpu_name) = line.split(':').nth(1) {
                 return cpu_name.trim().to_string();
-            }
-            else {
+            } else {
                 return line.trim().to_string();
             }
         }
     }
-    
+
     "Not found!".to_string()
 }
-
-
 
 #[cfg(test)]
 mod info_tests {
@@ -46,7 +41,6 @@ mod info_tests {
 
     #[test]
     fn get_cpu_data_success() {
-        
         std::fs::write("tests/cpu_name.txt", get_cpu_name()).unwrap();
     }
 }

@@ -14,9 +14,8 @@ pub struct RustfetchCLI {
     #[arg(short, long, global = true, default_value_t = false)]
     verbose: bool,
 
-
     #[command(subcommand)]
-    pub commands: Option<Commands>
+    pub commands: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -25,38 +24,32 @@ pub enum Commands {
     GenConfig,
 }
 
-
-
 fn main() {
     let cli = RustfetchCLI::parse();
 
     match &cli.commands {
-        Some(n) => {
-            match n {
-                Commands::GenConfig => {
-                    println!("Generating config files...");
-                    generate_config();
-                }
-
-                Commands::Version => {
-                    if cli.verbose {
-                        print!("Rustfetch:");
-                        println!("A modern and highly customizable system information tool.");
-                        println!("GitHub Repo: https://github.com/xshotss/rustfetch");
-                    }
-
-                    println!("v{}", env!("CARGO_PKG_VERSION"));
-                }
+        Some(n) => match n {
+            Commands::GenConfig => {
+                println!("Generating config files...");
+                generate_config();
             }
-        }
+
+            Commands::Version => {
+                if cli.verbose {
+                    print!("Rustfetch:");
+                    println!("A modern and highly customizable system information tool.");
+                    println!("GitHub Repo: https://github.com/xshotss/rustfetch");
+                }
+
+                println!("v{}", env!("CARGO_PKG_VERSION"));
+            }
+        },
 
         None => {
             println!("This is not implemented yet!");
         }
     }
 }
-
-
 
 // generates ~/.config/rustfetch directory and some files
 fn generate_config() {
@@ -65,19 +58,24 @@ fn generate_config() {
         let destination = home.join(".config/rustfetch");
         match fs::create_dir(&destination) {
             Ok(_) => {
-                println!("{} {}", "Config directory created at {}".green(),
-                destination.display()
+                println!(
+                    "{} {}",
+                    "Config directory created at {}".green(),
+                    destination.display()
                 );
 
                 // generate config.lua file
-                match std::fs::write(destination.join("config.lua"), "
+                match std::fs::write(
+                    destination.join("config.lua"),
+                    "
 -- This is an automatically generating config file for Rustfetch.
 -- Check the Github repo for help:
 -- https://github.com/xshotss/rustfetch
 
 ascii_art = \"default.txt\"
 modules = \"modules.json\"
-                ") {
+                ",
+                ) {
                     Ok(_) => println!("{}", "Generated default Lua file successfully!".green()),
 
                     Err(e) => {
@@ -87,23 +85,28 @@ modules = \"modules.json\"
                     }
                 }
 
-
                 // creates ascii directory
                 match std::fs::create_dir(destination.join("ascii")) {
                     Ok(_) => (),
                     Err(e) => {
-                        eprintln!("{}", "CRITICAL: Failed to create default ASCII directory!".red());
+                        eprintln!(
+                            "{}",
+                            "CRITICAL: Failed to create default ASCII directory!".red()
+                        );
                         eprintln!("Generated error: {e}");
                         std::process::exit(1);
                     }
                 }
 
                 // creates modules.json
-                match std::fs::write(destination.join("modules.json"), "
+                match std::fs::write(
+                    destination.join("modules.json"),
+                    "
 {
     \"modules\" = [\"cpu\", \"gpu\", \"host\"]
 }
-                ") {
+                ",
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         eprintln!("{}", "CRITICAL: Failed to create modules JSON file!".red());
@@ -114,20 +117,23 @@ modules = \"modules.json\"
             }
 
             Err(e) => {
-                eprintln!("{} {}", "Failed to create directory in {}!!".red(), destination.display());
+                eprintln!(
+                    "{} {}",
+                    "Failed to create directory in {}!!".red(),
+                    destination.display()
+                );
                 eprintln!("{} {}", "Error: {}\nAborting...".red(), e);
                 std::process::exit(1);
             }
         }
-    }
-
-    else {
-        eprintln!("{}", "CRITICAL: Could not find user home directory!
+    } else {
+        eprintln!(
+            "{}",
+            "CRITICAL: Could not find user home directory!
         You're either not on a Linux system, or you do not have home directories configured.
         Aborting..."
-        .red());
+                .red()
+        );
         std::process::exit(1);
     }
 }
-
-
