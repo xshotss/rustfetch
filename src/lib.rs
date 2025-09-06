@@ -2,6 +2,21 @@ pub mod info;
 pub mod modules;
 
 
+pub const DEFAULT_LUA_CONFIG: &str = r#"
+-- This is an automatically generating config file for Rustfetch.
+-- Check the Github repo for help:
+-- https://github.com/xshotss/rustfetch
+
+-- All ASCII art files should be placed in ~/.config/rustfetch/ascii/
+ascii_art = "tux.txt"
+
+-- For configuring your own modules, go to the repository for help.
+default_modules = true
+
+module_mode = "fancy"
+"#;
+
+
 /// A built in const containing ASCII art of the Linux mascot, Tux.
 pub const TUX_ASCII_ART: &str = r#"
                 .88888888:.

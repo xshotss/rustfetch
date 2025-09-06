@@ -2,7 +2,7 @@ use std::fs;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
-use rustfetch::TUX_ASCII_ART;
+use rustfetch::{DEFAULT_LUA_CONFIG, TUX_ASCII_ART};
 
 #[derive(Parser)]
 #[command(
@@ -68,19 +68,7 @@ fn generate_config() {
                 // generate config.lua file
                 match std::fs::write(
                     destination.join("config.lua"),
-                    r#"
--- This is an automatically generating config file for Rustfetch.
--- Check the Github repo for help:
--- https://github.com/xshotss/rustfetch
-
--- All ASCII art files should be placed in ~/.config/rustfetch/ascii/
-ascii_art = "tux.txt"
-
--- For configuring your own modules, go to the repository for help.
-default_modules = true
-
-module_mode = "fancy"
-                "#,
+                    DEFAULT_LUA_CONFIG,
                 ) {
                     Ok(_) => println!("{}", "Generated default Lua file successfully!".green()),
 
@@ -116,23 +104,6 @@ module_mode = "fancy"
                         std::process::exit(1);
                     }
                 }
-
-                // creates modules.json
-                match std::fs::write(
-                    destination.join("modules.json"),
-                    "
-{
-    \"modules\" = [\"cpu\", \"gpu\", \"host\"]
-}
-                ",
-                ) {
-                    Ok(_) => (),
-                    Err(e) => {
-                        eprintln!("{}", "CRITICAL: Failed to create modules JSON file!".red());
-                        eprintln!("Generated error: {e}");
-                        std::process::exit(1);
-                    }
-                }
             }
 
             Err(e) => {
@@ -146,6 +117,8 @@ module_mode = "fancy"
             }
         }
     } else {
+        // this can happen if $HOME is not configured
+        // this is VERY unlikely to happen on like 99.9999% of linux systems
         eprintln!(
             "{}",
             "CRITICAL: Could not find user home directory!
