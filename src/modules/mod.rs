@@ -78,6 +78,7 @@ mod module_tests {
         // Write CPU module
         for line in cpu_module.render() {
             writeln!(file, "{}", line).unwrap();
+            println!("{line}");
         }
 
         writeln!(file).unwrap(); // Add spacing between modules
@@ -85,6 +86,7 @@ mod module_tests {
         // Write Memory module
         for line in memory_module.render() {
             writeln!(file, "{}", line).unwrap();
+            println!("{line}");
         }
 
         // Verify the file was written correctly
