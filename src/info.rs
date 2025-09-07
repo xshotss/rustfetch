@@ -89,7 +89,7 @@ pub fn get_hostname() -> Result<String, Box<dyn std::error::Error>> {
 
 pub fn get_uptime() -> String {
     let uptime_content = std::fs::read_to_string("/proc/uptime").unwrap_or_else(|e| {
-        return e.to_string();
+        e.to_string()
     });
     let uptime_seconds: f64 = uptime_content.split_whitespace().next()
         .unwrap_or("0")
