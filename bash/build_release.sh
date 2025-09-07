@@ -1,6 +1,24 @@
 #!/bin/bash
 set -e  # Exit immediately on any error
 
+# READ BEFORE CONTINUING
+
+
+
+# this script is not intended for use by the users
+# if you want to download the latest stable release, just go to download/
+
+
+
+
+
+
+
+
+
+
+
+
 echo "🔧 Rustfetch Release Build Script"
 echo "================================="
 
