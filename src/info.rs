@@ -38,7 +38,7 @@ pub fn get_cpu_name() -> String {
 }
 
 
-pub fn get_gpu_string() -> String {
+pub fn get_gpu_name() -> String {
     let output = Command::new("sh")
         .arg("-c")
         .arg("lspci | grep -i \"VGA\"") 
@@ -112,7 +112,7 @@ pub fn get_uptime() -> String {
 
 #[cfg(test)]
 mod info_tests {
-    use crate::info::{get_cpu_name, get_gpu_string, get_uptime, get_user_host};
+    use crate::info::{get_cpu_name, get_gpu_name, get_uptime, get_user_host};
 
     #[test]
     fn get_cpu_data_success() {
@@ -121,7 +121,7 @@ mod info_tests {
 
     #[test]
     fn get_gpu_data_success() {
-        std::fs::write("tests/gpu_name.txt", get_gpu_string()).unwrap();
+        std::fs::write("tests/gpu_name.txt", get_gpu_name()).unwrap();
     }
 
     #[test]
