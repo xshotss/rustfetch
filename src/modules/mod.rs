@@ -1,3 +1,5 @@
+pub mod loader;
+
 pub struct Module {
     pub name: String,
     pub value: String,
@@ -10,7 +12,7 @@ impl Module {
         Self {
             name: name.to_string(),
             value: value.to_string(),
-            width: 45,     // Default total width
+            width: 60,     // Default total width
             name_width: 8, // Default name width
         }
     }
@@ -20,7 +22,7 @@ impl Module {
         self
     }
 
-    pub fn render(&self) -> Vec<String> {
+    pub fn render_as_fancy(&self) -> Vec<String> {
         let content_width = self.width - 4; // Account for "│ " and " │"
         let value_width = content_width - self.name_width - 3; // Account for " | "
 
@@ -42,6 +44,25 @@ impl Module {
         let bottom_border = format!("└{}┘", "─".repeat(self.width - 2));
 
         vec![border, content, bottom_border]
+    }
+
+    pub fn render_as_basic(&self) -> String {
+        let content_width = self.width - 4; // Account for "│ " and " │"
+        let value_width = content_width - self.name_width - 3; // Account for " | "
+
+        // Format name (centered in its allocated space)
+        let name_display = format!("{:^width$}", self.name, width = self.name_width);
+
+        // Format value (truncate if too long)
+        let value_display = if self.value.chars().count() > value_width {
+            let mut truncated: String = self.value.chars().take(value_width - 3).collect();
+            truncated.push_str("...");
+            format!("{:<width$}", truncated, width = value_width)
+        } else {
+            format!("{:<width$}", self.value, width = value_width)
+        };
+
+        format!("{}: {}", name_display, value_display)
     }
 }
 
@@ -76,7 +97,7 @@ mod module_tests {
             .unwrap();
 
         // Write CPU module
-        for line in cpu_module.render() {
+        for line in cpu_module.render_as_fancy() {
             writeln!(file, "{}", line).unwrap();
             println!("{line}");
         }
@@ -84,7 +105,7 @@ mod module_tests {
         writeln!(file).unwrap(); // Add spacing between modules
 
         // Write Memory module
-        for line in memory_module.render() {
+        for line in memory_module.render_as_fancy() {
             writeln!(file, "{}", line).unwrap();
             println!("{line}");
         }
