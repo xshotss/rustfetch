@@ -2,7 +2,7 @@ use std::fs;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
-use rustfetch::{DEFAULT_LUA_CONFIG, TUX_ASCII_ART};
+use rustfetch::{DEFAULT_LUA_CONFIG, TUX_ASCII_ART, modules::loader::lua::load_lua_config};
 
 #[derive(Parser)]
 #[command(
@@ -46,9 +46,13 @@ fn main() {
             }
         },
 
-        None => {
-            println!("This is not implemented yet!");
-        }
+        None => match load_lua_config() {
+            Ok(_) => (),
+            Err(e) => {
+                eprintln!("{} {}", "An error occured: ".red(), e);
+                std::process::exit(1);
+            }
+        },
     }
 }
 
@@ -102,10 +106,11 @@ fn generate_config() {
             Err(e) => {
                 eprintln!(
                     "{} {}",
-                    "Failed to create directory in {}!!".red(),
+                    "Failed to create directory in".red(),
                     destination.display()
                 );
-                eprintln!("{} {}", "Error: {}\nAborting...".red(), e);
+                eprintln!("{} {}", "Error: ".red(), e);
+                eprintln!("{}", "Aborting...".red());
                 std::process::exit(1);
             }
         }
