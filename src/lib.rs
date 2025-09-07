@@ -1,7 +1,6 @@
 pub mod info;
 pub mod modules;
 
-
 pub const DEFAULT_LUA_CONFIG: &str = r#"
 -- This is an automatically generating config file for Rustfetch.
 -- Check the Github repo for help:
@@ -15,7 +14,6 @@ default_modules = true
 
 module_mode = "fancy"
 "#;
-
 
 /// A built in const containing ASCII art of the Linux mascot, Tux.
 pub const TUX_ASCII_ART: &str = r#"
@@ -46,8 +44,6 @@ pub const TUX_ASCII_ART: &str = r#"
  `'.:::::::::::88888888888.88:::::::::'
        `':::_:' -- '' -'-' `':_::::'`
 "#;
-
-
 
 #[cfg(test)]
 mod librs_tests {

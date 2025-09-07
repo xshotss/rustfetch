@@ -66,10 +66,7 @@ fn generate_config() {
                 );
 
                 // generate config.lua file
-                match std::fs::write(
-                    destination.join("config.lua"),
-                    DEFAULT_LUA_CONFIG,
-                ) {
+                match std::fs::write(destination.join("config.lua"), DEFAULT_LUA_CONFIG) {
                     Ok(_) => println!("{}", "Generated default Lua file successfully!".green()),
 
                     Err(e) => {
@@ -92,14 +89,10 @@ fn generate_config() {
                     }
                 }
 
-                match std::fs::write(destination.join("ascii/tux.txt"),
-                TUX_ASCII_ART) {
+                match std::fs::write(destination.join("ascii/tux.txt"), TUX_ASCII_ART) {
                     Ok(_) => (),
                     Err(e) => {
-                        eprintln!(
-                            "{}",
-                            "CRITICAL: Failed to load Tux ASCII art!".red()
-                        );
+                        eprintln!("{}", "CRITICAL: Failed to load Tux ASCII art!".red());
                         eprintln!("Generated error: {e}");
                         std::process::exit(1);
                     }

@@ -37,11 +37,10 @@ pub fn get_cpu_name() -> String {
     "Not found!".to_string()
 }
 
-
 pub fn get_gpu_name() -> String {
     let output = Command::new("sh")
         .arg("-c")
-        .arg("lspci | grep -i \"VGA\"") 
+        .arg("lspci | grep -i \"VGA\"")
         .output()
         .unwrap_or_else(|e| {
             eprintln!("Could not run lspci command to get GPU info!\nIs pciutils installed?");
@@ -50,7 +49,7 @@ pub fn get_gpu_name() -> String {
         });
 
     let output_str = String::from_utf8_lossy(&output.stdout);
-    
+
     for line in output_str.lines() {
         if line.contains("VGA") {
             // Split at the first colon to remove PCI address
@@ -62,23 +61,20 @@ pub fn get_gpu_name() -> String {
             }
         }
     }
-    
+
     "GPU not found".to_string()
 }
-
 
 pub fn get_user_host() -> String {
     let username = env::var("USER").unwrap_or_else(|_| "unknown".to_string());
     let hostname = get_hostname().unwrap_or_else(|_| "localhost".to_string());
-    
+
     format!("{}@{}", username, hostname)
 }
 
 pub fn get_hostname() -> Result<String, Box<dyn std::error::Error>> {
-    let hostname = std::fs::read_to_string("/etc/hostname")?
-        .trim()
-        .to_string();
-    
+    let hostname = std::fs::read_to_string("/etc/hostname")?.trim().to_string();
+
     if hostname.is_empty() {
         Err("Empty hostname".into())
     } else {
@@ -86,21 +82,19 @@ pub fn get_hostname() -> Result<String, Box<dyn std::error::Error>> {
     }
 }
 
-
 pub fn get_uptime() -> String {
-    let uptime_content = std::fs::read_to_string("/proc/uptime").unwrap_or_else(|e| {
-        e.to_string()
-    });
-    let uptime_seconds: f64 = uptime_content.split_whitespace().next()
+    let uptime_content = std::fs::read_to_string("/proc/uptime").unwrap_or_else(|e| e.to_string());
+    let uptime_seconds: f64 = uptime_content
+        .split_whitespace()
+        .next()
         .unwrap_or("0")
         .parse()
         .expect("Failed to get uptime!");
-        
-    
+
     let days = (uptime_seconds / 86400.0) as u64;
     let hours = ((uptime_seconds % 86400.0) / 3600.0) as u64;
     let minutes = ((uptime_seconds % 3600.0) / 60.0) as u64;
-    
+
     if days > 0 {
         format!("{}d {}h {}m", days, hours, minutes)
     } else if hours > 0 {
@@ -126,15 +120,11 @@ mod info_tests {
 
     #[test]
     fn get_hostname_success() {
-        std::fs::write("tests/hostname.txt", format!("{}",
-            get_user_host()
-        )).unwrap();
+        std::fs::write("tests/hostname.txt", format!("{}", get_user_host())).unwrap();
     }
 
     #[test]
     fn get_uptime_success() {
-        std::fs::write("tests/uptime.txt", format!("{}", 
-            get_uptime()
-        )).unwrap();
+        std::fs::write("tests/uptime.txt", format!("{}", get_uptime())).unwrap();
     }
 }
