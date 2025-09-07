@@ -111,7 +111,7 @@ rustfetch gen-config
 **Troubleshooting**
 If you get something like a `"Permission denied"` error, try running this:
 ```bash
-chmod +x ~/.rustfetch/rustfetch
+chmod +x ~/rustfetch/target/release/rustfetch
 ```
 
 You only need to run this command once. This command adds a directory to your `~/.config/` directory called `rustfetch`.
