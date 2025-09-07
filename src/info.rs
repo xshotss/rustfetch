@@ -104,9 +104,55 @@ pub fn get_uptime() -> String {
     }
 }
 
+
+pub fn get_mem_info() -> String {
+    let uptime_content = std::fs::read_to_string("/proc/meminfo")
+        .unwrap_or_else(|e| e.to_string());
+
+    let mut total = String::new();
+    let mut used = String::new();
+
+    for line in uptime_content.trim().lines() {
+        if line.starts_with("MemTotal:") {
+            total = line
+                .split(':')
+                .nth(1)
+                .unwrap()
+                .replace("kB", "")
+                .trim()
+                .to_string();
+        }
+        else if line.starts_with("MemAvailable:") {
+            used = line
+                .split(':')
+                .nth(1)
+                .unwrap()
+                .replace("kB", "")
+                .trim()
+                .to_string();
+        }
+    }
+
+    // convert total and used to gigabytes instead of kilobytes
+    let total_as_gb = total
+        .parse::<f64>()
+        .unwrap_or(0.0) / 1024.0 / 1024.0;  // KB → MB → GB
+
+    let used_as_gb = used
+        .parse::<f64>()
+        .unwrap_or(0.0) / 1024.0 / 1024.0;   // KB → MB → GB
+
+    format!("{:.3}GB / {:.3}GB ({:.1}%)",
+        total_as_gb - used_as_gb,
+        total_as_gb,
+        // convert it to percentage
+        ((total_as_gb - used_as_gb) / total_as_gb) * 100.0
+    )
+}
+
 #[cfg(test)]
 mod info_tests {
-    use crate::info::{get_cpu_name, get_gpu_name, get_uptime, get_user_host};
+    use crate::info::{get_cpu_name, get_gpu_name, get_mem_info, get_uptime, get_user_host};
 
     #[test]
     fn get_cpu_data_success() {
@@ -126,5 +172,10 @@ mod info_tests {
     #[test]
     fn get_uptime_success() {
         std::fs::write("tests/uptime.txt", format!("{}", get_uptime())).unwrap();
+    }
+
+    #[test]
+    fn get_mem_info_success() {
+        std::fs::write("tests/mem.txt", get_mem_info()).unwrap();
     }
 }

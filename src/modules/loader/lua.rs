@@ -1,7 +1,7 @@
 use mlua::{Lua, Table};
 
 use crate::{
-    info::{get_cpu_name, get_gpu_name, get_hostname},
+    info::{get_cpu_name, get_gpu_name, get_mem_info, get_uptime, get_user_host},
     modules::Module,
 };
 
@@ -73,10 +73,9 @@ impl RsfInstance {
         match identifier {
             "CPU" => get_cpu_name(),
             "GPU" => get_gpu_name(),
-            "Host" => get_hostname().unwrap_or_else(|e| {
-                eprintln!("Error getting hostname: {}", e);
-                "Unknown".to_string()
-            }),
+            "Host" => get_user_host(),
+            "Uptime" => get_uptime(),
+            "Memory" => get_mem_info(),
             _ => {
                 eprintln!("Unknown builtin module: {}", identifier);
                 "Not available".to_string()

@@ -21,6 +21,9 @@ modules = {
   hostname = {
     type = "builtin"
   }
+  memory = {
+    type = "builtin"
+  }
 }
 "#;
 
