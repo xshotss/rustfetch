@@ -104,10 +104,8 @@ pub fn get_uptime() -> String {
     }
 }
 
-
 pub fn get_mem_info() -> String {
-    let uptime_content = std::fs::read_to_string("/proc/meminfo")
-        .unwrap_or_else(|e| e.to_string());
+    let uptime_content = std::fs::read_to_string("/proc/meminfo").unwrap_or_else(|e| e.to_string());
 
     let mut total = String::new();
     let mut used = String::new();
@@ -121,8 +119,7 @@ pub fn get_mem_info() -> String {
                 .replace("kB", "")
                 .trim()
                 .to_string();
-        }
-        else if line.starts_with("MemAvailable:") {
+        } else if line.starts_with("MemAvailable:") {
             used = line
                 .split(':')
                 .nth(1)
@@ -134,15 +131,12 @@ pub fn get_mem_info() -> String {
     }
 
     // convert total and used to gigabytes instead of kilobytes
-    let total_as_gb = total
-        .parse::<f64>()
-        .unwrap_or(0.0) / 1024.0 / 1024.0;  // KB → MB → GB
+    let total_as_gb = total.parse::<f64>().unwrap_or(0.0) / 1024.0 / 1024.0; // KB → MB → GB
 
-    let used_as_gb = used
-        .parse::<f64>()
-        .unwrap_or(0.0) / 1024.0 / 1024.0;   // KB → MB → GB
+    let used_as_gb = used.parse::<f64>().unwrap_or(0.0) / 1024.0 / 1024.0; // KB → MB → GB
 
-    format!("{:.3}GB / {:.3}GB ({:.1}%)",
+    format!(
+        "{:.3}GB / {:.3}GB ({:.1}%)",
         total_as_gb - used_as_gb,
         total_as_gb,
         // convert it to percentage
