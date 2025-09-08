@@ -1,3 +1,5 @@
+use colored::Colorize;
+
 pub mod loader;
 
 pub struct Module {
@@ -40,7 +42,8 @@ impl Module {
 
         // Build the lines
         let border = format!("┌{}┐", "─".repeat(self.width - 2));
-        let content = format!("│ {} | {} │", name_display, value_display);
+        let content = format!("│ {} | {} │", name_display.bold().bright_blue(),
+            value_display.bold().white());
         let bottom_border = format!("└{}┘", "─".repeat(self.width - 2));
 
         vec![border, content, bottom_border]
