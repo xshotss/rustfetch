@@ -11,17 +11,19 @@ ascii = "tux.txt"
 
 mode = "fancy"
 
+show_ascii = true
+
 modules = {
-  cpu = {
+  CPU = {
     type = "builtin"
   },
-  gpu = {
+  GPU = {
     type = "builtin"
   },
-  hostname = {
+  Host = {
     type = "builtin"
-  }
-  memory = {
+  },
+  Memory = {
     type = "builtin"
   }
 }
