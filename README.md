@@ -129,31 +129,49 @@ rustfetch
 
 
 # Configuration and scripting
+**NOTE:** Some basic knowledge of Lua is required.
+
 Rustfetch uses a highly configured Lua environment for scripting. The only Lua config file that is available is `~/.config/rustfetch/config.lua`. The limits of Rustfetch are basically just Lua's limitations.
 
-You do not need Lua on your system to use Rustfetch as it is statically linked to the `mlua` crate. This means the entirety of the Lua interpreter is contained within the executable. This can increase the size of binary *SIGNIFICANTLY*.
+**NOTE:** Rustfetch is still under development. Only builtin modules are currently allowed.
 
-However, this means that you don't need to have the specific version of Lua installed on your system.
 
-If you don't like the binary's size **AND YOU HAVE LUA 5.4 INSTALLED**, you can do the following:
-- Clone the repository and go into it (similar to compiling from source)
-- Edit Cargo.toml:
-Look for this line
-```rust
-mlua = { version = "0.11.3", features = ["lua54", "vendored"]}
+To configure Rustfetch, go to your `~/.config/rustfetch/config.lua` file.
+This is the default Lua configuration:
+```Lua
+-- This is an automatically generated config file for Rustfetch.
+-- Check the Github repo for help:
+-- https://github.com/xshotss/rustfetch
+
+-- All ASCII art files should be placed in ~/.config/rustfetch/ascii/
+ascii = "tux.txt"
+
+mode = "fancy"
+
+show_ascii = true
+
+modules = {
+  CPU = {
+    type = "builtin"
+  },
+  GPU = {
+    type = "builtin"
+  },
+  Host = {
+    type = "builtin"
+  },
+  Memory = {
+    type = "builtin"
+  }
+}
 ```
 
-Replace it with:
-```rust
-mlua = { version = "0.11.3", features = ["lua54"]}
-```
-Again, make sure you have Lua 5.4 installed.
-```bash
-lua -v
-```
-- Build the project normally... (See **Installation/Build from source (Nightly build)**)
+## Custom ASCII
+To add custom ASCII to Rustfetch, add a `.txt` file to your `~/.config/rustfetch/ascii` directory.
+Then, go into your `config.lua` script and change the value of the `ascii` variable to the file's path that you just added.
 
+## Builtin Modules
+Rustfetch comes with some builtin modules like `GPU`, `CPU`, etc... All the builtin modules are already turned on by default. To remove one, just remove them from the `modules` table.
 
-
-
+## Custom Modules
 Coming soon...
