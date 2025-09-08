@@ -29,22 +29,24 @@ impl RsfInstance {
         }
     }
 
-    pub fn output(&self) {
-        // Print ASCII art
-        let ascii_path = std::env::home_dir()
-            .unwrap()
-            .join(".config/rustfetch/ascii")
-            .join(&self.ascii_path);
+    pub fn output(&self, show_ascii: bool) {
+        if show_ascii {
+            // Print ASCII art
+            let ascii_path = std::env::home_dir()
+                .unwrap()
+                .join(".config/rustfetch/ascii")
+                .join(&self.ascii_path);
 
-        let ascii_contents = std::fs::read_to_string(&ascii_path).unwrap_or_else(|e| {
-            eprintln!(
-                "Failed to read ASCII file ({}) due to error: {e}",
-                ascii_path.display()
-            );
-            std::process::exit(1);
-        });
+            let ascii_contents = std::fs::read_to_string(&ascii_path).unwrap_or_else(|e| {
+                eprintln!(
+                    "Failed to read ASCII file ({}) due to error: {e}",
+                    ascii_path.display()
+                );
+                std::process::exit(1);
+            });
 
-        println!("{ascii_contents}");
+            println!("{ascii_contents}");
+        }
 
         // Process modules based on mode
         if self.mode == ModuleMode::Fancy {
@@ -89,8 +91,6 @@ pub struct ModuleConfig {
     pub identifier: String,
     pub module_type: String,
     pub function_to_call: Option<String>,
-    //pub name: Option<String>,
-    //pub enabled: bool,
 }
 
 impl Default for ModuleConfig {
@@ -144,7 +144,7 @@ pub fn load_lua_config() -> Result<(), Box<dyn std::error::Error>> {
         .get("ascii")
         .unwrap_or_else(|_| "tux.txt".to_string());
     let modules_table: Table = globals.get("modules").unwrap();
-    //let show_ascii: bool = globals.get("show_ascii").unwrap_or(true);
+    let show_ascii: bool = globals.get("show_ascii").unwrap_or(true);
 
     let actual_mode = match module_mode.as_str() {
         "basic" => ModuleMode::Basic,
@@ -152,8 +152,7 @@ pub fn load_lua_config() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let modules = parse_modules_table(&modules_table)?;
-
     let instance = RsfInstance::new(modules, ascii_path, actual_mode);
-    instance.output();
+    instance.output(show_ascii);
     Ok(())
 }
